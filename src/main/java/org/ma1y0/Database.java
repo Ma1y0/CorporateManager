@@ -29,8 +29,8 @@ public class Database {
 			connection = DriverManager.getConnection(dbUrl);
 			System.out.println("Database connection established.");
 
-			// Create the Employee table if it doesn't exist
 			createEmployeeTable();
+			createOrdersTable();
 
 		} catch (ClassNotFoundException e) {
 			System.err.println("SQLite JDBC driver not found: " + e.getMessage());
@@ -50,9 +50,27 @@ public class Database {
 
 		try (Statement stmt = connection.createStatement()) {
 			stmt.execute(sql);
-			System.out.println("'Employees' table created or already exists.");
+			System.out.println("Employees table created or already exists.");
 		} catch (SQLException e) {
-			System.err.println("Error creating 'Employees' table: " + e.getMessage());
+			System.err.println("Error creating Employees table: " + e.getMessage());
 		}
+	}
+
+	private void createOrdersTable() {
+		String sql = "CREATE TABLE IF NOT EXISTS Orders ("
+				+ "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "order_name TEXT NOT NULL,"
+				+ "description TEXT,"
+				+ "state TEXT CHECK(state IN ('ACCEPTED', 'WIP', 'COMPLETED')) NOT NULL,"
+				+ "date_received TEXT NOT NULL,"
+				+ "due_date TEXT"
+				+ ");";
+		try (Statement stmt = connection.createStatement()) {
+			stmt.execute(sql);
+			System.out.println("Orders table created or already exists.");
+		} catch (SQLException e) {
+			System.err.println("Error creating Orders table: " + e.getMessage());
+		}
+
 	}
 }

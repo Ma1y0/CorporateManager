@@ -95,4 +95,86 @@ public class EmployeeService {
 
 		return employees;
 	}
+
+	public Employee getEmployeeById(int id) {
+		try (PreparedStatement pstmt = Database.getInstance().getConnection()
+				.prepareStatement("SELECT * FROM Employees WHERE id = ? LIMIT 1")) {
+			pstmt.setInt(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			if (!rs.next()) {
+				System.out.println("No employee found: " + id);
+				return null;
+			}
+
+			return new Employee(rs.getInt("id"), rs.getString("name"), rs.getString("surname"),
+					rs.getInt("wage"), rs.getString("position"));
+		} catch (SQLException e) {
+			System.err.println("Error fetching employee: " + e.getMessage());
+		}
+
+		return null;
+	}
+
+	public boolean removeEmployeeById(int id) {
+		boolean success = false;
+		try (PreparedStatement pstmt = Database.getInstance().getConnection()
+				.prepareStatement("DELETE FROM Employees WHERE id = ?")) {
+			pstmt.setInt(1, id);
+			int rowsAffected = pstmt.executeUpdate();
+
+			if (rowsAffected > 0) {
+				System.out.println("Employee with ID " + id + " deleted successfully.");
+				success = true;
+			} else {
+				System.err.println("No employee found with ID " + id + " for deletion.");
+			}
+		} catch (SQLException e) {
+			System.err.println("Error deleting employee: " + e.getMessage());
+		}
+
+		return success;
+	}
+
+	public boolean updateEmployee(int id, String name, String surname, int wage, String position) {
+		boolean success = false;
+		try (PreparedStatement pstmt = Database.getInstance().getConnection()
+				.prepareStatement("UPDATE Employees SET name = ?, surname = ?, wage = ?, position = ? WHERE id = ?")) {
+
+			pstmt.setString(1, name);
+			pstmt.setString(2, surname);
+			pstmt.setInt(3, wage);
+			pstmt.setString(4, position);
+			pstmt.setInt(5, id);
+
+			int rowsAffected = pstmt.executeUpdate();
+			if (rowsAffected > 0) {
+				System.out.println("Employee with ID " + id + " updated successfully.");
+				success = true;
+			} else {
+				System.err.println("No employee found with ID " + id + " for update.");
+			}
+
+		} catch (SQLException e) {
+			System.err.println("Error updating user: " + e.getMessage());
+		}
+
+		return success;
+	}
+
+	public int sumWages() {
+		int sum = -1;
+		try (PreparedStatement pstm = Database.getInstance().getConnection()
+				.prepareStatement("SELECT SUM(wage) FROM Employees")) {
+			ResultSet rs = pstm.executeQuery();
+
+			if (rs.next()) {
+				sum = rs.getInt(1);
+			} else {
+				System.err.println("No wages to sum");
+			}
+		} catch (SQLException e) {
+			System.err.println("Error suming employee wages: " + e.getMessage());
+		}
+		return sum;
+	}
 }
