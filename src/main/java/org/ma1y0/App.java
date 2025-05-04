@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.ma1y0.EmployeeService.Employee;
+import org.ma1y0.InventoryService.InventoryItem;
 import org.ma1y0.OrderService.OrderState;
 
 /**
@@ -14,6 +15,7 @@ public class App {
 	public static void main(String[] args) {
 		EmployeeService employeeService = new EmployeeService();
 		OrderService orderService = new OrderService();
+		InventoryService inventoryService = new InventoryService();
 
 		// int id = employeeService.create(20, "Janis", "Ian", "Space dyke");
 		// System.out.println("Created new employee: " + id);
@@ -61,13 +63,30 @@ public class App {
 		// LocalDate.now(),
 		// LocalDate.now().plusWeeks(4));
 		// System.out.println("Created order 4 with ID: " + order4Id);
-		boolean success = orderService.changeStateById(4, OrderState.WIP);
-		System.out.println("Success?: " + success);
+		// boolean success = orderService.changeStateById(4, OrderState.WIP);
+		// System.out.println("Success?: " + success);
+		//
+		// List<OrderService.Order> allOrders = orderService.getAllOrders();
+		// System.out.println("Found " + allOrders.size() + " orders:");
+		// for (OrderService.Order order : allOrders) {
+		// System.out.println(order);
+		// }
 
-		List<OrderService.Order> allOrders = orderService.getAllOrders();
-		System.out.println("Found " + allOrders.size() + " orders:");
-		for (OrderService.Order order : allOrders) {
-			System.out.println(order);
+		// int itemId1 = inventoryService.create("Laptop", 50, 10);
+		// int itemId2 = inventoryService.create("Keyboard", 100, 20);
+		// int itemId3 = inventoryService.create("Mouse", 75, 15);
+		// int itemId4 = inventoryService.create("Monitor", 30, 5);
+		// int itemId5 = inventoryService.create("Webcam", 60, 12);
+		// boolean success = inventoryService.updateStorck(4, 56866856);
+		// System.out.println("Updated: " + success);
+		// List<InventoryItem> inventory = inventoryService.getInvetory();
+		// for (InventoryItem item : inventory) {
+		// System.out.println(item);
+		// }
+		List<InventoryItem> understocked = inventoryService.getUnderstocked();
+		for (InventoryItem item : understocked) {
+			System.out.println(item);
 		}
+
 	}
 }

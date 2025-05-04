@@ -52,7 +52,7 @@ public class EmployeeService {
 	public int create(int wage, String name, String surname, String position) {
 		int userID = -1;
 		try (PreparedStatement pstmt = Database.getInstance().getConnection()
-				.prepareStatement("INSERT INTO Employees(wage, name, surname, position) VALUES(?, ?, ?, ?)",
+				.prepareStatement("INSERT INTO Employees (wage, name, surname, position) VALUES (?, ?, ?, ?)",
 						PreparedStatement.RETURN_GENERATED_KEYS)) {
 
 			pstmt.setInt(1, wage);
