@@ -32,6 +32,7 @@ public class Database {
 			createEmployeeTable();
 			createOrdersTable();
 			createInvetoryTable();
+			createOrderItemsTable();
 
 		} catch (ClassNotFoundException e) {
 			System.err.println("SQLite JDBC driver not found: " + e.getMessage());
@@ -87,6 +88,23 @@ public class Database {
 			System.out.println("Inventory table created or already exists.");
 		} catch (SQLException e) {
 			System.err.println("Error creating Inventory table: " + e.getMessage());
+		}
+	}
+
+	private void createOrderItemsTable() {
+		String sql = "CREATE TABLE IF NOT EXISTS OrderItems (" +
+				"order_id INTEGER," +
+				"inventory_id INTEGER," +
+				"quantity INTEGER NOT NULL," +
+				"PRIMARY KEY (order_id, inventory_id)," +
+				"FOREIGN KEY (order_id) REFERENCES Orders(id)," +
+				"FOREIGN KEY (inventory_id) REFERENCES Inventory(id)" +
+				");";
+		try (Statement stmt = connection.createStatement()) {
+			stmt.execute(sql);
+			System.out.println("OrderItems table created or already exists.");
+		} catch (SQLException e) {
+			System.err.println("Error creating OrderItems table: " + e.getMessage());
 		}
 	}
 }

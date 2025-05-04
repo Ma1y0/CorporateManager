@@ -1,7 +1,9 @@
 package org.ma1y0;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.ma1y0.EmployeeService.Employee;
 import org.ma1y0.InventoryService.InventoryItem;
@@ -83,10 +85,15 @@ public class App {
 		// for (InventoryItem item : inventory) {
 		// System.out.println(item);
 		// }
-		List<InventoryItem> understocked = inventoryService.getUnderstocked();
-		for (InventoryItem item : understocked) {
-			System.out.println(item);
-		}
+		// List<InventoryItem> understocked = inventoryService.getUnderstocked();
+		// for (InventoryItem item : understocked) {
+		// System.out.println(item);
+		// }
+		Map<Integer, Integer> itemsToAdd = new HashMap<>();
+		itemsToAdd.put(3, 5);
+		itemsToAdd.put(2, 2);
+		boolean itemsAdded = orderService.addItems(1, itemsToAdd);
+		System.out.println("Added? " + itemsAdded);
 
 	}
 }

@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class OrderService {
 	static enum OrderState {
@@ -120,6 +121,39 @@ public class OrderService {
 		}
 
 		return id;
+	}
+
+	public boolean addItems(int orderId, Map<Integer, Integer> items) {
+		boolean success = false;
+
+		try (PreparedStatement pstmt = Database.getInstance().getConnection()
+				.prepareStatement("INSERT INTO OrderItems (order_id, inventory_id, quantity) VALUES (?, ?, ?)")) {
+
+			for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
+
+				pstmt.setInt(1, orderId);
+				pstmt.setInt(2, entry.getKey());
+				pstmt.setInt(3, entry.getValue());
+
+				pstmt.addBatch();
+			}
+
+			int[] rowsAffectedBatch = pstmt.executeBatch();
+
+			boolean batchSuccess = true;
+			for (int i : rowsAffectedBatch) {
+				if (i <= 0) {
+					batchSuccess = false;
+					break;
+				}
+			}
+			success = batchSuccess;
+
+		} catch (SQLException e) {
+			System.err.println("Error adding items to order: " + e.getMessage());
+		}
+
+		return success;
 	}
 
 	public List<Order> getAllOrders() {
